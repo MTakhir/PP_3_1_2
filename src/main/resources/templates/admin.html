@@ -28,7 +28,7 @@
             <td th:utext="${user.getEmail}">Email</td>
             <td><span th:each="roles : ${user.getRoles()}" th:utext= "${roles.toString()}+'   '">Roles</span></td>
             <td><a th:href="@{/admin/{id}/update(id=${user.getId})}">Update</a></td>
-            <td><a th:href="@{/admin/delete/{id}(id=${user.getId})}">Delete</a></td>
+            <td><form th:method="DELETE" th:action="@{/admin/{id}(id=${user.getId})}"><input type="submit" value="Delete"/></form> </td>
         </tr>
     </table>
 </body>

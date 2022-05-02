@@ -46,8 +46,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(int id) {
-        userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
         userRepository.deleteById(id);
     }
 
