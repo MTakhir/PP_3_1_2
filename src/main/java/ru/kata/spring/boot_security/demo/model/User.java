@@ -28,6 +28,17 @@ public class User implements UserDetails {
     @Column(name = "roles")
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
+
+    public User() {
+    }
+
+    public User(String firstName, String lastName, int age, String email) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = email;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;

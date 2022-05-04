@@ -2,10 +2,12 @@ package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.dao.RoleDao;
 
 @Service
+@Transactional
 public class RoleServiceImpl implements RoleService{
 
     private RoleDao roleDao;
@@ -18,5 +20,10 @@ public class RoleServiceImpl implements RoleService{
     @Override
     public Role findByRole(String role) {
         return roleDao.findByRole(role);
+    }
+
+    @Override
+    public void save(Role role) {
+        roleDao.save(role);
     }
 }
