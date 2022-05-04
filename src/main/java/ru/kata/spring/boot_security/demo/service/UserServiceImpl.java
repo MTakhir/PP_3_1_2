@@ -1,52 +1,66 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repository.UserRepository;
+import ru.kata.spring.boot_security.demo.dao.UserDao;
 
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private UserDao userDao;
+    private RoleService roleService;
+    private BCryptPasswordEncoder passwordEncoder;
 
-    @Override
-    public List<User> getUsers() {
-        return userRepository.findAll();
+    @Autowired
+    public UserServiceImpl(UserDao userDao, RoleService roleService, BCryptPasswordEncoder passwordEncoder) {
+        this.userDao = userDao;
+        this.roleService = roleService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-    public void save(User user) {
-        userRepository.save(user);
+    public List<User> getUsers() {
+        return userDao.getUsers();
+    }
+
+    @Override
+    public void save(User user, String[] roles, String pass) {
+        user.setPassword(passwordEncoder.encode(pass));
+        user.setRoles(Arrays.stream(roles)
+                .map(role -> roleService.findByRole(role))
+                .collect(Collectors.toList()));
+        userDao.save(user);
     }
 
     @Override
     public User findUser(int id) {
-        return userRepository.getById(id);
+        return userDao.findUser(id);
     }
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
+        return userDao.findByEmail(email);
     }
 
     @Override
-    public void update(User user, int id) {
+    public void update(User user, int id, String[] roles, String pass) {
         user.setId(id);
-        userRepository.saveAndFlush(user);
+        user.setPassword(passwordEncoder.encode(pass));
+        user.setRoles(Arrays.stream(roles)
+                .map(role -> roleService.findByRole(role))
+                .collect(Collectors.toList()));
+        userDao.update(user);
     }
 
     @Override
     public void delete(int id) {
-        userRepository.deleteById(id);
+        userDao.delete(id);
     }
 
 }

@@ -10,17 +10,25 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import ru.kata.spring.boot_security.demo.service.UserDetailsServiceImpl;
 
-
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
-    @Autowired
     private SuccessUserHandler successUserHandler;
 
+    @Autowired
+    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService, SuccessUserHandler successUserHandler) {
+        this.userDetailsService = userDetailsService;
+        this.successUserHandler = successUserHandler;
+    }
+
+    public WebSecurityConfig(boolean disableDefaults, UserDetailsServiceImpl userDetailsService, SuccessUserHandler successUserHandler) {
+        super(disableDefaults);
+        this.userDetailsService = userDetailsService;
+        this.successUserHandler = successUserHandler;
+    }
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -52,5 +60,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .permitAll();
     }
-
 }

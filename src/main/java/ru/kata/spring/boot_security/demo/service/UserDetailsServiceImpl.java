@@ -10,21 +10,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repository.UserRepository;
-
+import ru.kata.spring.boot_security.demo.dao.UserDao;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
+    private UserDao userDao;
+
     @Autowired
-    private UserRepository userRepository;
+    public UserDetailsServiceImpl(UserDao userDao) {
+        this.userDao = userDao;
+    }
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(username);
+        User user = userDao.findByEmail(username);
 
         if(user == null) {
             throw new UsernameNotFoundException(String.format("Email '%' not found", user.getEmail()));
