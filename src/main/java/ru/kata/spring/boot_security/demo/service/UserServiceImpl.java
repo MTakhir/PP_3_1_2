@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
 public class UserServiceImpl implements UserService {
 
     private UserDao userDao;
@@ -30,6 +29,7 @@ public class UserServiceImpl implements UserService {
         return userDao.getUsers();
     }
 
+    @Transactional
     @Override
     public void save(User user, String[] roles, String pass) {
         user.setPassword(passwordEncoder.encode(pass));
@@ -49,6 +49,7 @@ public class UserServiceImpl implements UserService {
         return userDao.findByEmail(email);
     }
 
+    @Transactional
     @Override
     public void update(User user, int id, String[] roles, String pass) {
         user.setId(id);
@@ -59,6 +60,7 @@ public class UserServiceImpl implements UserService {
         userDao.update(user);
     }
 
+    @Transactional
     @Override
     public void delete(int id) {
         userDao.delete(id);
